@@ -32,7 +32,7 @@ Wolia is a modern, GPU-accelerated office suite built in Rust. It's a **Cargo wo
 - Don't simplify to satisfy. Don't simlify tests if they complain or give error, find exact cause and fix them.
 - Don't add `2>&1`, `tail` and `head` to commands.
 - Make sure there is no problems left in problems tab at the end of task.
-- At the end of the task do use clippy, deny, test, check commands and if problems, fix them.
+- At the end of the task do use `cargo clippy --workspace`, deny, `cargo test --workspace`, `cargo check --workspace` commands and if problems, fix them.
 - At the very end of task, if successful, do commit conventionally according to Google's conventional commit.
 - Don't forget to update the tracking file like ROADMAP.md as you make progress.
 - Don't create summary documents or no need to tell them at the end of the work.

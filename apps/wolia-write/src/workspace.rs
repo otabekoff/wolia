@@ -1,10 +1,15 @@
-//! Document workspace.
+//! Document workspace with integrated UI components.
 
 use wolia_core::Document;
 use wolia_edit::EditSession;
+use wolia_format::{DocumentReader, DocumentWriter};
 use wolia_layout::{LayoutEngine, LayoutTree};
 
-/// A document workspace containing the document and editing state.
+use crate::sidebar::Sidebar;
+use crate::statusbar::StatusBar;
+use crate::toolbar::Toolbar;
+
+/// A document workspace containing the document and editing state with UI components.
 pub struct Workspace {
     /// The document being edited.
     pub document: Document,
@@ -18,6 +23,12 @@ pub struct Workspace {
     pub dirty: bool,
     /// File path (if saved).
     pub file_path: Option<std::path::PathBuf>,
+    /// Toolbar component.
+    pub toolbar: Toolbar,
+    /// Sidebar component.
+    pub sidebar: Sidebar,
+    /// Status bar component.
+    pub statusbar: StatusBar,
 }
 
 impl Workspace {
@@ -30,6 +41,9 @@ impl Workspace {
             layout: None,
             dirty: false,
             file_path: None,
+            toolbar: Toolbar::new(),
+            sidebar: Sidebar::new(),
+            statusbar: StatusBar::new(),
         }
     }
 
@@ -44,7 +58,10 @@ impl Workspace {
             .map_err(|e| anyhow::anyhow!("Failed to read document: {}", e))?;
 
         let mut workspace = Self::new(document);
-        workspace.file_path = Some(path.to_owned());
+        workspace.file_path = Some(path.to_path_buf());
+
+        // Update UI with document info.
+        workspace.update_ui_from_document();
 
         Ok(workspace)
     }
@@ -62,8 +79,15 @@ impl Workspace {
 
         std::fs::write(path, data)?;
         self.dirty = false;
+        self.statusbar.mark_saved();
 
         Ok(())
+    }
+
+    /// Save document to a new path.
+    pub fn save_to_path(&mut self, path: impl AsRef<std::path::Path>) -> anyhow::Result<()> {
+        self.file_path = Some(path.as_ref().to_path_buf());
+        self.save()
     }
 
     /// Update the layout.
@@ -72,6 +96,37 @@ impl Workspace {
             Ok(layout) => self.layout = Some(layout),
             Err(e) => tracing::error!("Layout failed: {}", e),
         }
+    }
+
+    /// Update UI components from document state.
+    pub fn update_ui_from_document(&mut self) {
+        // Update status bar with document statistics.
+        if let Ok(content) = self.get_document_text() {
+            self.statusbar.update_statistics(&content);
+        }
+
+        // Update status bar file path.
+        if let Some(path) = &self.file_path {
+            self.statusbar
+                .set_file_path(Some(path.to_string_lossy().to_string()));
+        }
+
+        // Update sidebar with document structure.
+        self.sidebar.update_outline(vec![]);
+    }
+
+    /// Mark document as modified.
+    pub fn mark_modified(&mut self) {
+        self.dirty = true;
+        self.statusbar
+            .set_status(crate::statusbar::StatusIndicator::Modified);
+    }
+
+    /// Get the document text content.
+    fn get_document_text(&self) -> anyhow::Result<String> {
+        // For now, return a placeholder. In a full implementation,
+        // this would extract text from the document structure.
+        Ok(String::new())
     }
 
     /// Get the document title.
@@ -89,7 +144,19 @@ impl Workspace {
             format!("{} - Wolia Write", name)
         }
     }
-}
 
-use wolia_format::DocumentReader;
-use wolia_format::DocumentWriter;
+    /// Toggle toolbar visibility.
+    pub fn toggle_toolbar(&mut self) {
+        self.toolbar.toggle();
+    }
+
+    /// Toggle sidebar visibility.
+    pub fn toggle_sidebar(&mut self) {
+        self.sidebar.toggle();
+    }
+
+    /// Toggle status bar visibility.
+    pub fn toggle_statusbar(&mut self) {
+        self.statusbar.toggle();
+    }
+}

@@ -10,6 +10,7 @@ use tracing_subscriber::prelude::*;
 mod app;
 mod editor;
 mod sidebar;
+mod statusbar;
 mod toolbar;
 mod ui;
 mod workspace;
