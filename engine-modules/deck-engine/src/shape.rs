@@ -39,7 +39,7 @@ impl Shape {
 
     /// Create a text box.
     pub fn text_box(bounds: Rect, text: Text) -> Self {
-        Self::new(ShapeKind::TextBox(text), bounds)
+        Self::new(ShapeKind::TextBox(Box::new(text)), bounds)
     }
 
     /// Create a rectangle.
@@ -62,7 +62,7 @@ impl Shape {
 #[derive(Debug, Clone)]
 pub enum ShapeKind {
     /// Text box.
-    TextBox(Text),
+    TextBox(Box<Text>),
     /// Rectangle.
     Rectangle,
     /// Rounded rectangle.

@@ -101,9 +101,10 @@ impl Cell {
 }
 
 /// Cell value types.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub enum CellValue {
     /// Empty cell.
+    #[default]
     Empty,
     /// Text value.
     Text(String),
@@ -115,12 +116,6 @@ pub enum CellValue {
     Error(String),
     /// Date value (days since epoch).
     Date(i64),
-}
-
-impl Default for CellValue {
-    fn default() -> Self {
-        Self::Empty
-    }
 }
 
 impl CellValue {
