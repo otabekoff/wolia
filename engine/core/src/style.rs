@@ -77,18 +77,13 @@ pub struct ParagraphStyle {
 }
 
 /// Text alignment.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum Alignment {
+    #[default]
     Left,
     Center,
     Right,
     Justify,
-}
-
-impl Default for Alignment {
-    fn default() -> Self {
-        Self::Left
-    }
 }
 
 /// A tab stop definition.

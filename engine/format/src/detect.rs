@@ -41,7 +41,7 @@ pub fn detect(data: &[u8]) -> DetectedFormat {
     }
 
     // Check for UTF-8 BOM or plain text
-    if data.starts_with(&[0xEF, 0xBB, 0xBF]) || data.iter().all(|&b| b < 128 || b >= 0xC0) {
+    if data.starts_with(&[0xEF, 0xBB, 0xBF]) || data.iter().all(|&b| !(128..0xC0).contains(&b)) {
         // Could be markdown or plain text
         if looks_like_markdown(data) {
             return DetectedFormat::Markdown;

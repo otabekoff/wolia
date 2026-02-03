@@ -99,7 +99,7 @@ impl AnimationTimeline {
     }
 
     /// Advance to the next animation.
-    pub fn next(&mut self) -> Option<&Animation> {
+    pub fn next_animation(&mut self) -> Option<&Animation> {
         if self.position < self.animations.len() {
             let anim = &self.animations[self.position];
             self.position += 1;

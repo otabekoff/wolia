@@ -1,6 +1,6 @@
 //! Window management.
 
-use winit::window::WindowAttributes;
+use winit::window::{Icon, WindowAttributes};
 use wolia_math::Size;
 
 /// Window configuration.
@@ -20,6 +20,8 @@ pub struct WindowConfig {
     pub decorated: bool,
     /// Whether the window is transparent.
     pub transparent: bool,
+    /// Window icon path.
+    pub icon_path: Option<String>,
 }
 
 impl Default for WindowConfig {
@@ -32,6 +34,7 @@ impl Default for WindowConfig {
             resizable: true,
             decorated: true,
             transparent: false,
+            icon_path: None,
         }
     }
 }
@@ -48,6 +51,12 @@ impl WindowConfig {
     /// Set the window size.
     pub fn with_size(mut self, width: f32, height: f32) -> Self {
         self.size = Size::new(width, height);
+        self
+    }
+
+    /// Set the window icon path.
+    pub fn with_icon(mut self, icon_path: impl Into<String>) -> Self {
+        self.icon_path = Some(icon_path.into());
         self
     }
 
@@ -77,7 +86,30 @@ impl WindowConfig {
             ));
         }
 
+        // Load icon if path is provided
+        if let Some(icon_path) = &self.icon_path {
+            if let Some(icon) = load_icon(icon_path) {
+                attrs = attrs.with_window_icon(Some(icon));
+            }
+        }
+
         attrs
+    }
+}
+
+/// Load an icon from a file path.
+fn load_icon(path: &str) -> Option<Icon> {
+    match image::open(path) {
+        Ok(img) => {
+            let img = img.into_rgba8();
+            let (width, height) = img.dimensions();
+            let rgba = img.into_raw();
+            Icon::from_rgba(rgba, width, height).ok()
+        }
+        Err(e) => {
+            tracing::warn!("Failed to load icon from {}: {}", path, e);
+            None
+        }
     }
 }
 

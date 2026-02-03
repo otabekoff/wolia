@@ -321,7 +321,9 @@ impl DeckApp {
 impl ApplicationHandler for DeckApp {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         if self.window.is_none() {
-            let config = WindowConfig::new("Wolia Deck").with_size(1400.0, 900.0);
+            let config = WindowConfig::new("Wolia Deck")
+                .with_size(1400.0, 900.0)
+                .with_icon("wolia.png");
             let attrs = config.to_window_attributes();
 
             match event_loop.create_window(attrs) {

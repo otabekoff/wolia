@@ -14,3 +14,4 @@ wolia-math = { workspace = true }
 winit = { workspace = true }
 thiserror = { workspace = true }
 tracing = { workspace = true }
+image = { workspace = true }

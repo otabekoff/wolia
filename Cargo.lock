@@ -4293,6 +4293,7 @@ dependencies = [
 name = "wolia-platform"
 version = "0.1.0"
 dependencies = [
+ "image",
  "thiserror 2.0.18",
  "tracing",
  "winit",
