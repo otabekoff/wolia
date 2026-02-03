@@ -13,6 +13,7 @@
 
 pub mod clipboard;
 pub mod cursor;
+pub mod document;
 pub mod editor;
 pub mod format;
 pub mod history;

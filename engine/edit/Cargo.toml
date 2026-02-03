@@ -15,3 +15,5 @@ wolia-math = { workspace = true }
 smallvec = { workspace = true }
 thiserror = { workspace = true }
 uuid = { workspace = true }
+[dev-dependencies]
+tempfile = "3.8"

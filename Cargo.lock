@@ -4223,6 +4223,7 @@ name = "wolia-edit"
 version = "0.1.0"
 dependencies = [
  "smallvec",
+ "tempfile",
  "thiserror 2.0.18",
  "uuid",
  "wolia-core",
