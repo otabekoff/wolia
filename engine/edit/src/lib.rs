@@ -14,10 +14,12 @@
 pub mod clipboard;
 pub mod cursor;
 pub mod editor;
+pub mod format;
 pub mod history;
 pub mod ime;
 pub mod input;
 pub mod operation;
+pub mod paragraph;
 
 pub use cursor::{Cursor, Selection};
 pub use editor::Editor;
