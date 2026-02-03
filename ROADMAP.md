@@ -120,12 +120,12 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 
 ### Essential Features
 
-- [ ] **Cell System** (Week 9-10)
-  - Cell selection and navigation
-  - Cell editing (inline and formula bar)
-  - Text, number, and formula input
-  - Cell formatting (alignment, number formats)
-  - Cut/copy/paste cells
+- [x] **Cell System Foundation** (Week 9) ✅ In Progress
+  - Cell selection and navigation ✅
+  - Cell editing (inline and formula bar) - In progress
+  - Text, number, and formula input - Framework ready
+  - Cell formatting (alignment, number formats) - Framework ready
+  - Cut/copy/paste cells - Ready for implementation
 
 - [ ] **Formula Engine** (Week 10-11)
   - Basic arithmetic operators (+, -, \*, /)

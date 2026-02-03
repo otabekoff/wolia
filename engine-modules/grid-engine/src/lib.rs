@@ -10,6 +10,7 @@
 //! - Sorting and filtering
 
 pub mod cell;
+pub mod evaluator;
 pub mod formula;
 pub mod selection;
 pub mod sheet;
@@ -17,7 +18,8 @@ pub mod spreadsheet;
 pub mod view;
 
 pub use cell::{Cell, CellRef, CellValue};
-pub use formula::{Formula, FormulaError};
+pub use evaluator::{Evaluator, Function};
+pub use formula::{Formula, FormulaContext, FormulaError};
 pub use selection::{CellRange, Selection};
 pub use sheet::Sheet;
 pub use spreadsheet::Spreadsheet;
