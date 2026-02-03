@@ -234,9 +234,12 @@ mod tests {
 
         stats.update(content);
 
-        assert_eq!(stats.word_count, 5);
-        assert_eq!(stats.character_count, 22); // No spaces
-        assert_eq!(stats.character_count_with_spaces, 27); // With spaces and newline
+        // "Hello", "world", "This", "is", "a", "test" = 6 words
+        assert_eq!(stats.word_count, 6);
+        // 21 non-whitespace characters: Helloworld + Thisisatest = 10 + 11 = 21
+        assert_eq!(stats.character_count, 21);
+        // 26 bytes total: "Hello world" (11) + "\n" (1) + "This is a test" (14)
+        assert_eq!(stats.character_count_with_spaces, 26);
         assert_eq!(stats.line_count, 2);
     }
 

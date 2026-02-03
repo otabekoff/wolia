@@ -220,8 +220,14 @@ mod tests {
         editor.set_cell_value(cell, CellValue::Number(42.0));
 
         editor.cut();
-        assert_eq!(editor.get_cell_value(cell), Some(CellValue::Empty));
+        // After cut, the cell is cleared (removed from storage, returns None)
+        assert!(editor.get_cell_value(cell).is_none());
+        // Clipboard should contain the original value
         assert!(editor.clipboard.is_some());
+        assert_eq!(
+            editor.clipboard.as_ref().unwrap()[0][0],
+            CellValue::Number(42.0)
+        );
     }
 
     #[test]

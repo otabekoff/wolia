@@ -11,6 +11,7 @@ use wolia_core::Document;
 use wolia_platform::window::WindowConfig;
 use wolia_render::{Quad, QuadRenderer};
 
+use crate::automation::AutomationDriver;
 use crate::workspace::Workspace;
 
 /// UI layout constants
@@ -22,11 +23,11 @@ const PAPER_HEIGHT: f32 = 1056.0; // US Letter height in pixels at 96 DPI
 const PAPER_MARGIN: f32 = 40.0;
 
 /// Run the Wolia Write application.
-pub fn run() -> Result<()> {
+pub fn run(enable_automation: bool) -> Result<()> {
     let event_loop = EventLoop::new()?;
     event_loop.set_control_flow(ControlFlow::Poll);
 
-    let mut app = WriteApp::new();
+    let mut app = WriteApp::new(enable_automation);
     event_loop.run_app(&mut app)?;
 
     Ok(())
@@ -34,11 +35,11 @@ pub fn run() -> Result<()> {
 
 /// The Wolia Write application.
 struct WriteApp {
-    /// The main window.
+    /// The main window - MUST be dropped LAST (after surface).
     window: Option<Arc<Window>>,
     /// The current workspace.
     workspace: Option<Workspace>,
-    /// GPU surface for rendering.
+    /// GPU surface for rendering - MUST be dropped BEFORE window.
     surface: Option<wgpu::Surface<'static>>,
     /// GPU device.
     device: Option<wgpu::Device>,
@@ -50,10 +51,12 @@ struct WriteApp {
     quad_renderer: Option<QuadRenderer>,
     /// Current window size.
     window_size: (u32, u32),
+    /// Automation driver for testing.
+    automation: AutomationDriver,
 }
 
 impl WriteApp {
-    fn new() -> Self {
+    fn new(enable_automation: bool) -> Self {
         Self {
             window: None,
             workspace: None,
@@ -63,14 +66,29 @@ impl WriteApp {
             surface_config: None,
             quad_renderer: None,
             window_size: (1400, 900),
+            automation: AutomationDriver::new(enable_automation),
         }
+    }
+
+    /// Clean up GPU resources in the correct order to prevent segfaults.
+    fn cleanup(&mut self) {
+        tracing::info!("Cleaning up GPU resources...");
+        // Drop in correct order: renderer -> surface -> device -> window
+        self.quad_renderer = None;
+        self.surface_config = None;
+        self.surface = None;
+        self.queue = None;
+        self.device = None;
+        self.workspace = None;
+        self.window = None;
+        tracing::info!("Cleanup complete");
     }
 
     fn build_ui(&self) -> Vec<Quad> {
         let (w, h) = (self.window_size.0 as f32, self.window_size.1 as f32);
         let mut quads = Vec::new();
 
-        // Toolbar background
+        // 1. Toolbar Background
         quads.push(Quad::new(
             0.0,
             0.0,
@@ -88,46 +106,113 @@ impl WriteApp {
             [0.85, 0.85, 0.85, 1.0],
         ));
 
-        // Toolbar buttons (File, Edit, View, Insert, Format, Tools, Help)
-        let button_labels = ["File", "Edit", "View", "Insert", "Format", "Tools", "Help"];
-        let mut x = 8.0;
-        for _ in button_labels {
-            // Button background (hover state would change this)
-            quads.push(Quad::new(x, 8.0, 60.0, 32.0, [0.92, 0.92, 0.92, 1.0]));
-            x += 68.0;
+        // 2. Toolbar Buttons
+        if let Some(workspace) = &self.workspace {
+            use crate::toolbar::ButtonState;
+            for button in workspace.toolbar.all_buttons() {
+                // Determine color based on state
+                let color = match button.state {
+                    ButtonState::Normal => [0.92, 0.92, 0.92, 1.0], // Default grey
+                    ButtonState::Hovered => [0.88, 0.88, 0.95, 1.0], // Light blue tint
+                    ButtonState::Active => [0.80, 0.80, 0.90, 1.0], // Darker blue
+                    ButtonState::Disabled => [0.96, 0.96, 0.96, 0.5], // Faded
+                };
+
+                quads.push(Quad::new(
+                    button.x,
+                    button.y,
+                    button.width,
+                    button.height,
+                    color,
+                ));
+            }
         }
 
-        // Sidebar background
-        quads.push(Quad::new(
-            0.0,
-            TOOLBAR_HEIGHT,
-            SIDEBAR_WIDTH,
-            h - TOOLBAR_HEIGHT - STATUS_BAR_HEIGHT,
-            [0.95, 0.95, 0.95, 1.0],
-        ));
+        // 3. Sidebar
+        let mut sidebar_width = 0.0;
+        if let Some(workspace) = &self.workspace {
+            if workspace.sidebar.visible {
+                sidebar_width = workspace.sidebar.width;
+                let sidebar_height = h - TOOLBAR_HEIGHT - STATUS_BAR_HEIGHT;
 
-        // Sidebar right border
-        quads.push(Quad::new(
-            SIDEBAR_WIDTH - 1.0,
-            TOOLBAR_HEIGHT,
-            1.0,
-            h - TOOLBAR_HEIGHT - STATUS_BAR_HEIGHT,
-            [0.85, 0.85, 0.85, 1.0],
-        ));
+                // Background
+                quads.push(Quad::new(
+                    0.0,
+                    TOOLBAR_HEIGHT,
+                    sidebar_width,
+                    sidebar_height,
+                    [0.95, 0.95, 0.95, 1.0],
+                ));
 
-        // Sidebar header
-        quads.push(Quad::new(
-            0.0,
-            TOOLBAR_HEIGHT,
-            SIDEBAR_WIDTH,
-            40.0,
-            [0.92, 0.92, 0.92, 1.0],
-        ));
+                // Right border
+                quads.push(Quad::new(
+                    sidebar_width - 1.0,
+                    TOOLBAR_HEIGHT,
+                    1.0,
+                    sidebar_height,
+                    [0.85, 0.85, 0.85, 1.0],
+                ));
 
-        // Document area background
-        let doc_x = SIDEBAR_WIDTH;
+                // Header background
+                quads.push(Quad::new(
+                    0.0,
+                    TOOLBAR_HEIGHT,
+                    sidebar_width,
+                    40.0,
+                    [0.92, 0.92, 0.92, 1.0],
+                ));
+
+                // Render outline items as placeholders (since we can't render text yet)
+                let items = workspace.sidebar.outline.flatten();
+                for (item, item_y) in items {
+                    // Start below header (40px)
+                    let y_pos = TOOLBAR_HEIGHT + 40.0 + item_y;
+                    if y_pos > h - STATUS_BAR_HEIGHT {
+                        break; // Clip to bottom
+                    }
+
+                    // Highlight selected item (if we knew which one was selected, but flatten returns item ref)
+                    // For now just render simple line markers
+                    let indent = 16.0 + (item.level as f32) * 16.0;
+
+                    quads.push(Quad::new(
+                        indent,
+                        y_pos + 4.0,
+                        120.0, // Placeholder text width
+                        16.0,
+                        [0.8, 0.8, 0.8, 1.0],
+                    ));
+                }
+            }
+        }
+
+        // 4. Status Bar
+        if let Some(workspace) = &self.workspace {
+            if workspace.statusbar.visible {
+                let sb_y = h - STATUS_BAR_HEIGHT;
+
+                // Background
+                quads.push(Quad::new(
+                    0.0,
+                    sb_y,
+                    w,
+                    STATUS_BAR_HEIGHT,
+                    [0.96, 0.96, 0.96, 1.0],
+                ));
+
+                // Top border
+                quads.push(Quad::new(0.0, sb_y, w, 1.0, [0.85, 0.85, 0.85, 1.0]));
+
+                // Status indicator dot
+                let (r, g, b) = workspace.statusbar.status.color_rgb();
+                quads.push(Quad::new(12.0, sb_y + 8.0, 8.0, 8.0, [r, g, b, 1.0]));
+            }
+        }
+
+        // 5. Document Area
+        let doc_x = sidebar_width;
         let doc_y = TOOLBAR_HEIGHT;
-        let doc_w = w - SIDEBAR_WIDTH;
+        let doc_w = w - sidebar_width;
         let doc_h = h - TOOLBAR_HEIGHT - STATUS_BAR_HEIGHT;
         quads.push(Quad::new(
             doc_x,
@@ -160,24 +245,6 @@ impl WriteApp {
             paper_w,
             paper_h,
             [1.0, 1.0, 1.0, 1.0],
-        ));
-
-        // Status bar background
-        quads.push(Quad::new(
-            0.0,
-            h - STATUS_BAR_HEIGHT,
-            w,
-            STATUS_BAR_HEIGHT,
-            [0.96, 0.96, 0.96, 1.0],
-        ));
-
-        // Status bar top border
-        quads.push(Quad::new(
-            0.0,
-            h - STATUS_BAR_HEIGHT,
-            w,
-            1.0,
-            [0.85, 0.85, 0.85, 1.0],
         ));
 
         quads
@@ -257,14 +324,44 @@ impl ApplicationHandler for WriteApp {
 
                     let surface = instance.create_surface(window.clone()).unwrap();
 
-                    let adapter = pollster::block_on(instance.request_adapter(
+                    // Try to get adapter, retry with fallback if needed
+                    let mut adapter_opt = pollster::block_on(instance.request_adapter(
                         &wgpu::RequestAdapterOptions {
-                            power_preference: wgpu::PowerPreference::default(),
+                            power_preference: wgpu::PowerPreference::HighPerformance,
                             compatible_surface: Some(&surface),
                             force_fallback_adapter: false,
                         },
-                    ))
-                    .expect("Failed to find GPU adapter");
+                    ));
+
+                    if adapter_opt.is_none() {
+                        tracing::warn!(
+                            "Failed to find HighPerformance adapter, trying LowPower..."
+                        );
+                        adapter_opt = pollster::block_on(instance.request_adapter(
+                            &wgpu::RequestAdapterOptions {
+                                power_preference: wgpu::PowerPreference::LowPower,
+                                compatible_surface: Some(&surface),
+                                force_fallback_adapter: false,
+                            },
+                        ));
+                    }
+
+                    if adapter_opt.is_none() {
+                        tracing::warn!(
+                            "Failed to find any hardware adapter, trying fallback software adapter..."
+                        );
+                        adapter_opt = pollster::block_on(instance.request_adapter(
+                            &wgpu::RequestAdapterOptions {
+                                power_preference: wgpu::PowerPreference::default(),
+                                compatible_surface: Some(&surface),
+                                force_fallback_adapter: true,
+                            },
+                        ));
+                    }
+
+                    let adapter = adapter_opt.expect("Failed to find any GPU adapter");
+
+                    tracing::info!("Using GPU Adapter: {:?}", adapter.get_info());
 
                     let (device, queue) = pollster::block_on(adapter.request_device(
                         &wgpu::DeviceDescriptor {
@@ -299,13 +396,26 @@ impl ApplicationHandler for WriteApp {
                     let quad_renderer = QuadRenderer::new(&device, format);
 
                     // Create a new workspace with an empty document
-                    self.workspace = Some(Workspace::new(Document::new()));
+                    let workspace = Workspace::new(Document::new());
+                    tracing::info!("Workspace initialized");
+                    tracing::info!(
+                        "UI: Toolbar mounted ({} buttons)",
+                        workspace.toolbar.all_buttons().len()
+                    );
+                    tracing::info!("UI: Sidebar mounted (Width: {})", workspace.sidebar.width);
+                    tracing::info!("UI: StatusBar mounted");
+
+                    self.workspace = Some(workspace);
                     self.surface = Some(surface);
                     self.device = Some(device);
                     self.queue = Some(queue);
                     self.surface_config = Some(surface_config);
                     self.quad_renderer = Some(quad_renderer);
                     self.window = Some(window);
+
+                    if self.automation.enabled {
+                        self.automation.load_scenario("smoke_test");
+                    }
                 }
                 Err(e) => {
                     tracing::error!("Failed to create window: {}", e);
@@ -318,6 +428,7 @@ impl ApplicationHandler for WriteApp {
         match event {
             WindowEvent::CloseRequested => {
                 tracing::info!("Close requested, exiting");
+                self.cleanup();
                 event_loop.exit();
             }
             WindowEvent::Resized(size) => {
@@ -341,7 +452,13 @@ impl ApplicationHandler for WriteApp {
         }
     }
 
-    fn about_to_wait(&mut self, _event_loop: &ActiveEventLoop) {
+    fn about_to_wait(&mut self, event_loop: &ActiveEventLoop) {
+        if self.automation.tick() {
+            tracing::info!("Automation sequence completed. Exiting.");
+            self.cleanup();
+            event_loop.exit();
+        }
+
         if let Some(window) = &self.window {
             window.request_redraw();
         }

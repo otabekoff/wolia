@@ -8,6 +8,7 @@ use anyhow::Result;
 use tracing_subscriber::prelude::*;
 
 mod app;
+mod automation;
 mod editor;
 mod sidebar;
 mod statusbar;
@@ -16,14 +17,24 @@ mod ui;
 mod workspace;
 
 fn main() -> Result<()> {
-    // Initialize logging
+    // Check for automation flag
+    let args: Vec<String> = std::env::args().collect();
+    let run_automation = args.contains(&"--test-scenario".to_string());
+
+    // Initialize logging with explicit default if RUST_LOG is unset
+    let filter = tracing_subscriber::EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info,wolia_write=debug"));
+
     tracing_subscriber::registry()
         .with(tracing_subscriber::fmt::layer())
-        .with(tracing_subscriber::EnvFilter::from_default_env())
+        .with(filter)
         .init();
 
     tracing::info!("Starting Wolia Write");
+    if run_automation {
+        tracing::info!("Running in Automation/Test Mode");
+    }
 
     // Run the application
-    app::run()
+    app::run(run_automation)
 }

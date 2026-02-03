@@ -56,6 +56,7 @@ impl IconManager {
     /// # Example
     ///
     /// ```
+    /// use wolia_assets::IconManager;
     /// let manager = IconManager::new();
     /// if let Some(svg) = manager.get("check") {
     ///     println!("Icon content: {}", svg);
@@ -84,6 +85,7 @@ impl IconManager {
     /// # Example
     ///
     /// ```
+    /// use wolia_assets::IconManager;
     /// let manager = IconManager::new();
     /// let arrow_icons = manager.search("arrow");
     /// ```
