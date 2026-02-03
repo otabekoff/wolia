@@ -199,7 +199,7 @@ mod tests {
     fn test_pipeline_creation() {
         let pipeline = AssetPipeline::new();
         let stats = pipeline.stats();
-        assert!(stats.total_assets() >= 0);
+        let _ = stats.total_assets();
     }
 
     #[test]

@@ -14,7 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: rustsec/audit-check@v1
+
+      # Rust 2024 toolchain
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: RustSec Audit
+        uses: rustsec/audit-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -23,7 +29,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: EmbarkStudios/cargo-deny-action@v1
+
+      # 🚨 This fixes the crash
+      - name: Install Rust (edition 2024 support)
+        uses: dtolnay/rust-toolchain@stable
+
+      # Optional: prove correct toolchain
+      - name: Verify Rust
+        run: |
+          rustc --version
+          cargo --version
+
+      # Now Cargo Deny sees Rust 2024 correctly
+      - name: Run cargo-deny
+        uses: EmbarkStudios/cargo-deny-action@v1
         with:
           log-level: warn
           command: check
