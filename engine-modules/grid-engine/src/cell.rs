@@ -1,6 +1,7 @@
 //! Cell model.
 
 use serde::{Deserialize, Serialize};
+use std::fmt;
 
 /// A cell reference (row, column).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -61,6 +62,12 @@ impl CellRef {
         }
 
         format!("{}{}", col_str, self.row + 1)
+    }
+}
+
+impl fmt::Display for CellRef {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.to_a1())
     }
 }
 

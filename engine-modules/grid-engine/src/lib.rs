@@ -11,13 +11,17 @@
 
 pub mod cell;
 pub mod formula;
+pub mod selection;
 pub mod sheet;
 pub mod spreadsheet;
+pub mod view;
 
 pub use cell::{Cell, CellRef, CellValue};
 pub use formula::{Formula, FormulaError};
+pub use selection::{CellRange, Selection};
 pub use sheet::Sheet;
 pub use spreadsheet::Spreadsheet;
+pub use view::GridView;
 
 /// Result type for grid operations.
 pub type Result<T> = std::result::Result<T, Error>;
