@@ -51,6 +51,10 @@ struct WriteApp {
     quad_renderer: Option<QuadRenderer>,
     /// Current window size.
     window_size: (u32, u32),
+    /// Current mouse position.
+    mouse_position: (f32, f32),
+    /// Whether mouse button is pressed.
+    mouse_pressed: bool,
     /// Automation driver for testing.
     automation: AutomationDriver,
 }
@@ -66,8 +70,57 @@ impl WriteApp {
             surface_config: None,
             quad_renderer: None,
             window_size: (1400, 900),
+            mouse_position: (0.0, 0.0),
+            mouse_pressed: false,
             automation: AutomationDriver::new(enable_automation),
         }
+    }
+
+    /// Handle mouse movement - update button hover states.
+    fn handle_mouse_move(&mut self) {
+        let (mx, my) = self.mouse_position;
+        if let Some(workspace) = &mut self.workspace {
+            // Reset all buttons to Normal (unless they're Active)
+            for category in workspace.toolbar.buttons.values_mut() {
+                for button in category.iter_mut() {
+                    if button.state != crate::toolbar::ButtonState::Active {
+                        if button.contains_point(mx, my) {
+                            if button.state != crate::toolbar::ButtonState::Hovered {
+                                button.state = crate::toolbar::ButtonState::Hovered;
+                            }
+                        } else if button.state == crate::toolbar::ButtonState::Hovered {
+                            button.state = crate::toolbar::ButtonState::Normal;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Handle mouse press - activate buttons.
+    fn handle_mouse_press(&mut self) {
+        let (mx, my) = self.mouse_position;
+        if let Some(workspace) = &mut self.workspace {
+            for category in workspace.toolbar.buttons.values_mut() {
+                for button in category.iter_mut() {
+                    if button.contains_point(mx, my) {
+                        // Toggle Active state for formatting buttons
+                        if button.state == crate::toolbar::ButtonState::Active {
+                            button.state = crate::toolbar::ButtonState::Normal;
+                        } else {
+                            button.state = crate::toolbar::ButtonState::Active;
+                        }
+                        tracing::info!("Button clicked: {} ({})", button.id, button.tooltip);
+                    }
+                }
+            }
+        }
+    }
+
+    /// Handle mouse release.
+    fn handle_mouse_release(&mut self) {
+        // For now, keep active state until clicked again
+        // This is toggle behavior for formatting buttons like Bold, Italic
     }
 
     /// Clean up GPU resources in the correct order to prevent segfaults.
@@ -444,6 +497,25 @@ impl ApplicationHandler for WriteApp {
             }
             WindowEvent::RedrawRequested => {
                 self.render();
+            }
+            WindowEvent::CursorMoved { position, .. } => {
+                self.mouse_position = (position.x as f32, position.y as f32);
+                self.handle_mouse_move();
+            }
+            WindowEvent::MouseInput { state, button, .. } => {
+                use winit::event::{ElementState, MouseButton};
+                if button == MouseButton::Left {
+                    match state {
+                        ElementState::Pressed => {
+                            self.mouse_pressed = true;
+                            self.handle_mouse_press();
+                        }
+                        ElementState::Released => {
+                            self.mouse_pressed = false;
+                            self.handle_mouse_release();
+                        }
+                    }
+                }
             }
             WindowEvent::KeyboardInput { .. } => {
                 // TODO: Handle keyboard input

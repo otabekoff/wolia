@@ -36,11 +36,63 @@ impl IconManager {
 
     /// Load all icons from the embedded assets
     fn load_icons() -> HashMap<String, String> {
-        // Icons are embedded during build time
-        // For development, this will be loaded from the filesystem
-        // For production, consider using include_bytes! macro
+        let mut icons = HashMap::new();
 
-        HashMap::new()
+        // Try to find icons directory relative to cargo manifest
+        let icon_paths = [
+            // Development: relative to workspace root
+            "engine/assets/icons",
+            // Alternative paths
+            "../engine/assets/icons",
+            "../../engine/assets/icons",
+        ];
+
+        let mut icons_dir = None;
+        for path in icon_paths {
+            let p = std::path::Path::new(path);
+            if p.exists() && p.is_dir() {
+                icons_dir = Some(p.to_path_buf());
+                break;
+            }
+        }
+
+        // Also check CARGO_MANIFEST_DIR at compile time for workspace root
+        if icons_dir.is_none() {
+            if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
+                // Go up to workspace root and then to icons
+                let workspace_root = std::path::Path::new(&manifest_dir)
+                    .parent()
+                    .and_then(|p| p.parent());
+                if let Some(root) = workspace_root {
+                    let icons_path = root.join("engine/assets/icons");
+                    if icons_path.exists() && icons_path.is_dir() {
+                        icons_dir = Some(icons_path);
+                    }
+                }
+            }
+        }
+
+        // Load icons if directory found
+        if let Some(dir) = icons_dir {
+            if let Ok(entries) = std::fs::read_dir(&dir) {
+                for entry in entries.flatten() {
+                    let path = entry.path();
+                    if path.extension().map(|e| e == "svg").unwrap_or(false) {
+                        if let Some(stem) = path.file_stem() {
+                            let name = stem.to_string_lossy().to_string();
+                            if let Ok(content) = std::fs::read_to_string(&path) {
+                                icons.insert(name, content);
+                            }
+                        }
+                    }
+                }
+            }
+            tracing::debug!("Loaded {} icons from {:?}", icons.len(), dir);
+        } else {
+            tracing::warn!("Icons directory not found, no icons will be available");
+        }
+
+        icons
     }
 
     /// Get an SVG icon by name

@@ -24,6 +24,8 @@ pub struct FormatButton {
     pub label: String,
     /// Button tooltip.
     pub tooltip: String,
+    /// Icon name (Lucide icon, without .svg extension).
+    pub icon: String,
     /// Current button state.
     pub state: ButtonState,
     /// Keyboard shortcut (e.g., "Ctrl+B").
@@ -44,11 +46,13 @@ impl FormatButton {
         id: impl Into<String>,
         label: impl Into<String>,
         tooltip: impl Into<String>,
+        icon: impl Into<String>,
     ) -> Self {
         Self {
             id: id.into(),
             label: label.into(),
             tooltip: tooltip.into(),
+            icon: icon.into(),
             state: ButtonState::Normal,
             shortcut: None,
             x: 0.0,
@@ -112,42 +116,55 @@ impl Toolbar {
     /// Initialize all toolbar buttons.
     fn init_buttons(&mut self) {
         let mut file_buttons = vec![
-            FormatButton::new("new", "New", "Create a new document").with_shortcut("Ctrl+N"),
-            FormatButton::new("open", "Open", "Open a document").with_shortcut("Ctrl+O"),
-            FormatButton::new("save", "Save", "Save the document").with_shortcut("Ctrl+S"),
+            FormatButton::new("new", "New", "Create a new document", "file-plus")
+                .with_shortcut("Ctrl+N"),
+            FormatButton::new("open", "Open", "Open a document", "folder-open")
+                .with_shortcut("Ctrl+O"),
+            FormatButton::new("save", "Save", "Save the document", "save").with_shortcut("Ctrl+S"),
         ];
 
         let mut edit_buttons = vec![
-            FormatButton::new("undo", "↶", "Undo").with_shortcut("Ctrl+Z"),
-            FormatButton::new("redo", "↷", "Redo").with_shortcut("Ctrl+Y"),
-            FormatButton::new("cut", "✂", "Cut").with_shortcut("Ctrl+X"),
-            FormatButton::new("copy", "⊞", "Copy").with_shortcut("Ctrl+C"),
-            FormatButton::new("paste", "⎗", "Paste").with_shortcut("Ctrl+V"),
+            FormatButton::new("undo", "Undo", "Undo", "undo").with_shortcut("Ctrl+Z"),
+            FormatButton::new("redo", "Redo", "Redo", "redo").with_shortcut("Ctrl+Y"),
+            FormatButton::new("cut", "Cut", "Cut", "scissors").with_shortcut("Ctrl+X"),
+            FormatButton::new("copy", "Copy", "Copy", "copy").with_shortcut("Ctrl+C"),
+            FormatButton::new("paste", "Paste", "Paste", "clipboard-paste").with_shortcut("Ctrl+V"),
         ];
 
         let mut format_buttons = vec![
-            FormatButton::new("bold", "B", "Bold").with_shortcut("Ctrl+B"),
-            FormatButton::new("italic", "I", "Italic").with_shortcut("Ctrl+I"),
-            FormatButton::new("underline", "U", "Underline").with_shortcut("Ctrl+U"),
-            FormatButton::new("strikethrough", "S", "Strikethrough").with_shortcut("Ctrl+Shift+X"),
+            FormatButton::new("bold", "Bold", "Bold", "bold").with_shortcut("Ctrl+B"),
+            FormatButton::new("italic", "Italic", "Italic", "italic").with_shortcut("Ctrl+I"),
+            FormatButton::new("underline", "Underline", "Underline", "underline")
+                .with_shortcut("Ctrl+U"),
+            FormatButton::new("strikethrough", "Strike", "Strikethrough", "strikethrough")
+                .with_shortcut("Ctrl+Shift+X"),
         ];
 
         let mut align_buttons = vec![
-            FormatButton::new("align_left", "≡", "Align left").with_shortcut("Ctrl+L"),
-            FormatButton::new("align_center", "⊕", "Align center").with_shortcut("Ctrl+E"),
-            FormatButton::new("align_right", "≡", "Align right").with_shortcut("Ctrl+R"),
-            FormatButton::new("align_justify", "≡", "Justify").with_shortcut("Ctrl+J"),
+            FormatButton::new("align_left", "Left", "Align left", "text-align-start")
+                .with_shortcut("Ctrl+L"),
+            FormatButton::new(
+                "align_center",
+                "Center",
+                "Align center",
+                "text-align-center",
+            )
+            .with_shortcut("Ctrl+E"),
+            FormatButton::new("align_right", "Right", "Align right", "text-align-end")
+                .with_shortcut("Ctrl+R"),
+            FormatButton::new("align_justify", "Justify", "Justify", "text-align-justify")
+                .with_shortcut("Ctrl+J"),
         ];
 
         let mut list_buttons = vec![
-            FormatButton::new("bullet_list", "•", "Bullet list"),
-            FormatButton::new("numbered_list", "1.", "Numbered list"),
+            FormatButton::new("bullet_list", "Bullets", "Bullet list", "list"),
+            FormatButton::new("numbered_list", "Numbers", "Numbered list", "list-ordered"),
         ];
 
         let mut insert_buttons = vec![
-            FormatButton::new("insert_image", "🖼", "Insert image"),
-            FormatButton::new("insert_table", "□", "Insert table"),
-            FormatButton::new("insert_link", "🔗", "Insert link").with_shortcut("Ctrl+K"),
+            FormatButton::new("insert_image", "Image", "Insert image", "image"),
+            FormatButton::new("insert_table", "Table", "Insert table", "table"),
+            FormatButton::new("insert_link", "Link", "Insert link", "link").with_shortcut("Ctrl+K"),
         ];
 
         // Position file buttons

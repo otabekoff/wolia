@@ -4165,6 +4165,7 @@ dependencies = [
  "image",
  "parking_lot",
  "thiserror 2.0.18",
+ "tracing",
  "ttf-parser 0.25.1",
  "uuid",
 ]
