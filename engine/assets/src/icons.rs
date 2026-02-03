@@ -29,20 +29,18 @@ pub struct IconManager {
 impl IconManager {
     /// Create a new icon manager and load all available icons
     pub fn new() -> Self {
-        let icons = ICON_CACHE.get_or_init(|| Self::load_icons()).clone();
+        let icons = ICON_CACHE.get_or_init(Self::load_icons).clone();
 
         IconManager { icons }
     }
 
     /// Load all icons from the embedded assets
     fn load_icons() -> HashMap<String, String> {
-        let icons = HashMap::new();
-
         // Icons are embedded during build time
         // For development, this will be loaded from the filesystem
         // For production, consider using include_bytes! macro
 
-        icons
+        HashMap::new()
     }
 
     /// Get an SVG icon by name

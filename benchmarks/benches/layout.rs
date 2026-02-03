@@ -1,6 +1,6 @@
 //! Layout benchmarks.
 
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 
 fn layout_benchmark(c: &mut Criterion) {
     c.bench_function("layout_small_doc", |b| {

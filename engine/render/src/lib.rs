@@ -19,7 +19,7 @@ pub mod texture;
 pub mod ui;
 
 pub use quad::{Quad, QuadRenderer, Vertex};
-pub use ui::{colors, dimensions, RenderRect};
+pub use ui::{RenderRect, colors, dimensions};
 
 use wolia_layout::LayoutTree;
 use wolia_math::{Color, Rect, Size};

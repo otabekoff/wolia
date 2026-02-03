@@ -3,8 +3,8 @@
 use wolia_core::text::Text;
 use wolia_math::Rect;
 
-use crate::line::Line;
 use crate::Constraints;
+use crate::line::Line;
 
 /// A laid-out paragraph.
 #[derive(Debug, Clone)]

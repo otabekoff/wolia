@@ -48,18 +48,20 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
   - Clipboard integration (copy/paste) ✅
   - Undo/redo framework ✅
 
-- [ ] **Document Model** (Week 2-3)
+- [x] **Document Model** (Week 2-3)
   - Complete core document structure ✅
   - Text storage with efficient editing ✅
   - Style system (fonts, colors, sizes) ✅
   - Paragraph formatting ✅
   - Basic change tracking for undo/redo ✅
 
-- [ ] **Asset Management** (Week 3)
-  - Font loading and caching
-  - Image loading and decoding
-  - Resource management
-  - Asset pipeline integration
+- [x] **Asset Management** (Week 3) ✅ COMPLETE
+  - Font loading and caching ✅
+  - Image loading and decoding ✅
+  - Resource management with LRU eviction ✅
+  - Asset pipeline integration ✅
+  - Generic AssetCache with reference counting ✅
+  - 18 comprehensive tests - all passing ✅
 
 ## Phase 2: Wolia Write MVP (Weeks 5-8)
 

@@ -14,3 +14,4 @@ ttf-parser = { workspace = true }
 image = { workspace = true }
 thiserror = { workspace = true }
 parking_lot = { workspace = true }
+uuid = { workspace = true }

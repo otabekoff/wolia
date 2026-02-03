@@ -35,6 +35,7 @@ Wolia is a modern, GPU-accelerated office suite built in Rust. It's a **Cargo wo
 - At the end of the task do use clippy, deny, test, check commands and if problems, fix them.
 - At the very end of task, if successful, do commit conventionally according to Google's conventional commit.
 - Don't forget to update the tracking file like ROADMAP.md as you make progress.
+- Don't create summary documents or no need to tell them at the end of the work.
 
 ### Before Making Changes
 
