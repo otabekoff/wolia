@@ -8,6 +8,7 @@ use anyhow::Result;
 use tracing_subscriber::prelude::*;
 
 mod app;
+mod editor;
 mod formulas;
 mod sheet;
 mod ui;
