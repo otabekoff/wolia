@@ -12,6 +12,7 @@
 pub mod line;
 pub mod page;
 pub mod paragraph;
+pub mod text;
 pub mod tree;
 
 use wolia_core::Document;
@@ -20,6 +21,7 @@ use wolia_math::{Rect, Size};
 pub use line::{Line, LineFragment};
 pub use page::{Page, PageLayout};
 pub use paragraph::ParagraphLayout;
+pub use text::TextLayout;
 pub use tree::{LayoutNode, LayoutTree};
 
 /// Result type for layout operations.

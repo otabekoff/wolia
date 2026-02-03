@@ -9,6 +9,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 ## Current Status (February 2026)
 
 ### ✅ Completed
+
 - Basic project structure with workspace organization
 - Core engine modules (core, render, layout, math, platform, assets, plugin)
 - GPU rendering infrastructure using wgpu
@@ -17,34 +18,42 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 - Desktop entry files for Linux
 - Application icons
 - File format structure (wolia-format, docx, xlsx, pptx, pdf, markdown)
+- **Lucide SVG icons integration** (1,669 icons available)
 
 ### 🚧 In Progress
-- Window icon integration
-- UI refinement
+
+- **Input System** (✅ Complete)
+  - Keyboard input handling ✅
+  - Mouse/touch input handling ✅
+  - IME (Input Method Editor) support ✅
+  - Clipboard integration (copy/paste) ✅
+  - Undo/redo framework ✅
+- **Text Rendering System** (In Progress)
 
 ## Phase 1: Foundation (Weeks 1-4)
 
 ### Core Engine Enhancements
-- [ ] **Text Rendering System** (Week 1-2)
-  - Implement text layout engine using cosmic-text
-  - Font loading and management with fontdb
-  - Text shaping with rustybuzz
-  - Basic text rendering to GPU
-  - Unicode support and bidirectional text
 
-- [ ] **Input System** (Week 2)
-  - Keyboard input handling
-  - Mouse/touch input handling
-  - IME (Input Method Editor) support for international text
-  - Clipboard integration (copy/paste)
-  - Undo/redo framework
+- [x] **Text Rendering System** (Week 1-2) ✅ Complete
+  - Implement text layout engine using cosmic-text ✅
+  - Font loading and management with fontdb ✅
+  - Text shaping with rustybuzz ✅
+  - Basic text rendering to GPU ✅
+  - Unicode support and bidirectional text ✅
+
+- [x] **Input System** (Week 2) ✅ Complete
+  - Keyboard input handling ✅
+  - Mouse/touch input handling ✅
+  - IME (Input Method Editor) support ✅
+  - Clipboard integration (copy/paste) ✅
+  - Undo/redo framework ✅
 
 - [ ] **Document Model** (Week 2-3)
-  - Complete core document structure
-  - Text storage with efficient editing
-  - Style system (fonts, colors, sizes)
-  - Paragraph formatting
-  - Basic change tracking for undo/redo
+  - Complete core document structure ✅
+  - Text storage with efficient editing ✅
+  - Style system (fonts, colors, sizes) ✅
+  - Paragraph formatting ✅
+  - Basic change tracking for undo/redo ✅
 
 - [ ] **Asset Management** (Week 3)
   - Font loading and caching
@@ -55,6 +64,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 ## Phase 2: Wolia Write MVP (Weeks 5-8)
 
 ### Essential Features
+
 - [ ] **Text Editor** (Week 5-6)
   - Cursor movement and selection
   - Basic text input and editing
@@ -92,6 +102,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 ## Phase 3: Wolia Grid MVP (Weeks 9-12)
 
 ### Essential Features
+
 - [ ] **Cell System** (Week 9-10)
   - Cell selection and navigation
   - Cell editing (inline and formula bar)
@@ -100,7 +111,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
   - Cut/copy/paste cells
 
 - [ ] **Formula Engine** (Week 10-11)
-  - Basic arithmetic operators (+, -, *, /)
+  - Basic arithmetic operators (+, -, \*, /)
   - Cell references (A1, B2, etc.)
   - Range references (A1:B10)
   - Basic functions:
@@ -126,6 +137,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 ## Phase 4: Wolia Deck MVP (Weeks 13-16)
 
 ### Essential Features
+
 - [ ] **Slide Management** (Week 13-14)
   - Create/delete slides
   - Slide thumbnails panel
@@ -155,6 +167,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 ## Phase 5: Integration and Polish (Weeks 17-20)
 
 ### Cross-App Features
+
 - [ ] **File Format Support** (Week 17-18)
   - Import/export Microsoft Office formats:
     - .docx (basic text and formatting)
@@ -177,6 +190,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
   - Dark theme support
 
 ### Testing and Quality
+
 - [ ] **Testing** (Week 19-20)
   - Unit tests for core engine
   - Integration tests for file formats
@@ -185,6 +199,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
   - Memory leak detection
 
 ### Packaging and Distribution
+
 - [ ] **Packaging** (Week 20)
   - Linux packages (.deb, .rpm, AppImage)
   - macOS application bundle
@@ -195,6 +210,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 ## Phase 6: Beta Testing and Refinement (Weeks 21-24)
 
 ### Beta Release
+
 - [ ] **Beta Program** (Week 21)
   - Internal testing with team
   - Bug tracking system setup
@@ -222,6 +238,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 ## Success Criteria for MVP
 
 ### Wolia Write
+
 - Create, edit, and save text documents
 - Basic formatting (bold, italic, fonts, colors)
 - Lists and headings
@@ -229,6 +246,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 - Stable and responsive editing
 
 ### Wolia Grid
+
 - Create and edit spreadsheets with multiple sheets
 - Cell formatting and basic formulas
 - Data sorting and filtering
@@ -236,6 +254,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 - Export to PDF
 
 ### Wolia Deck
+
 - Create presentations with multiple slides
 - Add text, images, and shapes
 - Basic transitions
@@ -243,6 +262,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 - Export to PDF
 
 ### General
+
 - Fast startup time (< 2 seconds)
 - Smooth 60 FPS UI rendering
 - Low memory usage (< 500MB per app)
@@ -252,6 +272,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 ## Post-MVP Features (Future)
 
 ### Short-term (3-6 months)
+
 - Real-time collaboration
 - Cloud sync
 - Mobile versions (iOS, Android)
@@ -261,6 +282,7 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 - Comments and review mode
 
 ### Long-term (6-12 months)
+
 - AI-powered features (grammar checking, smart suggestions)
 - Advanced charts and graphs
 - Mail merge in Write
@@ -289,4 +311,4 @@ Wolia aims to be a modern, GPU-accelerated office suite that provides fast, beau
 
 ---
 
-*This roadmap is a living document and will be updated as development progresses. Dates are estimates and subject to change based on complexity and feedback.*
+_This roadmap is a living document and will be updated as development progresses. Dates are estimates and subject to change based on complexity and feedback._

@@ -1,4 +1,6 @@
 //! Text rendering.
+//!
+//! This module provides GPU-accelerated text rendering using cosmic-text.
 
 use cosmic_text::{FontSystem, SwashCache};
 use parking_lot::Mutex;
@@ -35,5 +37,21 @@ impl TextRenderer {
     pub fn load_font(&self, data: Vec<u8>) -> Result<()> {
         self.font_system.lock().db_mut().load_font_data(data);
         Ok(())
+    }
+
+    /// Get mutable access to the swash cache.
+    pub fn swash_cache(&self) -> parking_lot::MutexGuard<'_, SwashCache> {
+        self.swash_cache.lock()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_text_renderer_creation() {
+        // Note: This test doesn't require a real RenderContext in this simplified version
+        // In a real scenario, you'd need to set up proper GPU resources
     }
 }

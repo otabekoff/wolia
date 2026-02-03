@@ -10,9 +10,11 @@
 #![allow(dead_code, unused_imports, unused_variables)]
 
 pub mod fonts;
+pub mod icons;
 pub mod images;
 
 pub use fonts::FontManager;
+pub use icons::IconManager;
 pub use images::ImageLoader;
 
 /// Result type for asset operations.

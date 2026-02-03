@@ -1,12 +1,19 @@
 [advisories]
 db-path = "~/.cargo/advisory-db"
-vulnerability = "deny"
-unmaintained = "warn"
-yanked = "warn"
-notice = "warn"
+
+[advisories.vulnerabilities]
+severity = "deny"
+
+[advisories.unmaintained]
+severity = "warn"
+
+[advisories.yanked]
+severity = "warn"
+
+[advisories.notice]
+severity = "warn"
 
 [licenses]
-unlicensed = "deny"
 allow = [
     "MIT",
     "Apache-2.0",
@@ -17,7 +24,12 @@ allow = [
     "MPL-2.0",
     "Unicode-DFS-2016",
 ]
-copyleft = "warn"
+
+[licenses.unlicensed]
+severity = "deny"
+
+[licenses.copyleft]
+severity = "warn"
 
 [bans]
 multiple-versions = "warn"

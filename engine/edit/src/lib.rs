@@ -13,12 +13,16 @@
 
 pub mod clipboard;
 pub mod cursor;
+pub mod editor;
 pub mod history;
 pub mod ime;
+pub mod input;
 pub mod operation;
 
 pub use cursor::{Cursor, Selection};
+pub use editor::Editor;
 pub use history::{History, UndoGroup};
+pub use input::{InputHandler, Key, KeyModifiers, KeyboardEvent, MouseEvent};
 pub use operation::Operation;
 
 /// Result type for edit operations.

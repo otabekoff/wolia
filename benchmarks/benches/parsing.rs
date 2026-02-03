@@ -1,6 +1,6 @@
 //! Parsing benchmarks.
 
-use criterion::{Criterion, criterion_group, criterion_main};
+use criterion::{criterion_group, criterion_main, Criterion};
 
 fn parsing_benchmark(c: &mut Criterion) {
     c.bench_function("parse_small_doc", |b| {

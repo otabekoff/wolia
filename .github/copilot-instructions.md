@@ -5,6 +5,7 @@ This file provides instructions for GitHub Copilot when working on the Wolia cod
 ## Project Overview
 
 Wolia is a modern, GPU-accelerated office suite built in Rust. It's a **Cargo workspace** with multiple crates organized into:
+
 - **Apps**: End-user applications (wolia-write, wolia-grid, wolia-deck)
 - **Engine**: Shared core functionality (core, layout, render, edit, format, platform, math, assets, plugin)
 - **Engine Modules**: App-specific engines (grid-engine, deck-engine)
@@ -23,6 +24,17 @@ Wolia is a modern, GPU-accelerated office suite built in Rust. It's a **Cargo wo
 - **Testing**: standard Rust tests, criterion for benchmarks, proptest for property testing, insta for snapshot testing
 
 ## Development Workflow
+
+### Must haves
+
+- Don't just finish tasks, don't just finish tasks to makr them as done, finish them to make really work.
+- Never be lazy and don't avoid doing hard things and don't do easy ones instead. Eyes are coward, hads are brave.
+- Don't simplify to satisfy. Don't simlify tests if they complain or give error, find exact cause and fix them.
+- Don't add `2>&1`, `tail` and `head` to commands.
+- Make sure there is no problems left in problems tab at the end of task.
+- At the end of the task do use clippy, deny, test, check commands and if problems, fix them.
+- At the very end of task, if successful, do commit conventionally according to Google's conventional commit.
+- Don't forget to update the tracking file like ROADMAP.md as you make progress.
 
 ### Before Making Changes
 
@@ -93,6 +105,7 @@ cargo run -p wolia-deck      # Run presentations
 ### Import Organization
 
 Group imports in this order:
+
 1. `std` imports
 2. External crate imports
 3. Internal crate imports (`crate::`)
@@ -121,7 +134,7 @@ use crate::layout::Layout;
 - Include examples in doc comments
 - Keep documentation up to date with code changes
 
-```rust
+````rust
 /// Renders a document to the screen.
 ///
 /// # Arguments
@@ -143,7 +156,7 @@ use crate::layout::Layout;
 pub fn render(document: &Document, viewport: &Viewport) -> Result<(), RenderError> {
     // ...
 }
-```
+````
 
 ## Architecture Considerations
 

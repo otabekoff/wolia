@@ -12,6 +12,7 @@ authors.workspace = true
 wolia-core = { workspace = true }
 wolia-math = { workspace = true }
 
+cosmic-text = { workspace = true }
 smallvec = { workspace = true }
 thiserror = { workspace = true }
 uuid = { workspace = true }
