@@ -1,0 +1,40 @@
+[package]
+name = "wolia-grid"
+description = "Wolia Grid - Spreadsheet application"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "wolia-grid"
+path = "src/main.rs"
+
+[dependencies]
+# Engine crates
+wolia-core = { workspace = true }
+wolia-math = { workspace = true }
+wolia-layout = { workspace = true }
+wolia-render = { workspace = true }
+wolia-edit = { workspace = true }
+wolia-format = { workspace = true }
+wolia-platform = { workspace = true }
+wolia-assets = { workspace = true }
+
+# App-specific engine
+grid-engine = { workspace = true }
+
+# File formats
+format-wolia = { workspace = true }
+format-xlsx = { workspace = true }
+
+# External
+tokio = { workspace = true }
+winit = { workspace = true }
+wgpu = { workspace = true }
+pollster = "0.4"
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }

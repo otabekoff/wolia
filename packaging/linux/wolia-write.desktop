@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Wolia Write
+Comment=Modern word processor
+GenericName=Word Processor
+Exec=wolia-write %F
+Icon=wolia
+Terminal=false
+Type=Application
+Categories=Office;WordProcessor;
+MimeType=application/vnd.wolia.document;application/vnd.openxmlformats-officedocument.wordprocessingml.document;text/markdown;
+Keywords=document;text;write;word;
+StartupNotify=true
+StartupWMClass=wolia-write

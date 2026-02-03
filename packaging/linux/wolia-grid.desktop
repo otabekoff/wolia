@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Wolia Grid
+Comment=Modern spreadsheet application
+GenericName=Spreadsheet
+Exec=wolia-grid %F
+Icon=wolia
+Terminal=false
+Type=Application
+Categories=Office;Spreadsheet;
+MimeType=application/vnd.wolia.spreadsheet;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;text/csv;
+Keywords=spreadsheet;cells;excel;calc;
+StartupNotify=true
+StartupWMClass=wolia-grid

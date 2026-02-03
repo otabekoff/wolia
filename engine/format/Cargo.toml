@@ -1,0 +1,16 @@
+[package]
+name = "wolia-format"
+description = "Document serialization and file format handling for Wolia"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[dependencies]
+wolia-core = { workspace = true }
+
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }

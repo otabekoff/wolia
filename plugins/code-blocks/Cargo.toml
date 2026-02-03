@@ -1,0 +1,15 @@
+[package]
+name = "plugin-code-blocks"
+description = "Syntax-highlighted code blocks for Wolia"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[dependencies]
+wolia-core = { workspace = true }
+wolia-plugin = { workspace = true }
+
+thiserror = { workspace = true }

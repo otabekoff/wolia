@@ -1,0 +1,22 @@
+[package]
+name = "wolia-core"
+description = "Core document model for Wolia"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[dependencies]
+wolia-math = { workspace = true }
+
+serde = { workspace = true }
+uuid = { workspace = true }
+smallvec = { workspace = true }
+indexmap = { workspace = true }
+thiserror = { workspace = true }
+parking_lot = { workspace = true }
+
+[dev-dependencies]
+proptest = { workspace = true }

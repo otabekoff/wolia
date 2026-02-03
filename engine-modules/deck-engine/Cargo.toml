@@ -1,0 +1,18 @@
+[package]
+name = "deck-engine"
+description = "Presentation engine for Wolia Deck"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[dependencies]
+wolia-core = { workspace = true }
+wolia-math = { workspace = true }
+
+serde = { workspace = true }
+uuid = { workspace = true }
+smallvec = { workspace = true }
+thiserror = { workspace = true }

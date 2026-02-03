@@ -1,0 +1,18 @@
+[package]
+name = "grid-engine"
+description = "Spreadsheet engine for Wolia Grid"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[dependencies]
+wolia-core = { workspace = true }
+wolia-math = { workspace = true }
+
+serde = { workspace = true }
+indexmap = { workspace = true }
+smallvec = { workspace = true }
+thiserror = { workspace = true }

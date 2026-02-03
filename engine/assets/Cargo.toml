@@ -1,0 +1,16 @@
+[package]
+name = "wolia-assets"
+description = "Asset loading for fonts, images, and resources"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[dependencies]
+fontdb = { workspace = true }
+ttf-parser = { workspace = true }
+image = { workspace = true }
+thiserror = { workspace = true }
+parking_lot = { workspace = true }

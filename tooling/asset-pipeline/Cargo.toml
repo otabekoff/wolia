@@ -1,0 +1,13 @@
+[package]
+name = "asset-pipeline"
+description = "Asset processing pipeline for Wolia"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[dependencies]
+image = { workspace = true }
+thiserror = { workspace = true }

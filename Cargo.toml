@@ -1,0 +1,171 @@
+[workspace]
+resolver = "2"
+
+members = [
+    # ─────────────────────────────────────────────────────────────────────────────
+    # Apps (end-user products)
+    # ─────────────────────────────────────────────────────────────────────────────
+    "apps/wolia-write",
+    "apps/wolia-grid",
+    "apps/wolia-deck",
+
+    # ─────────────────────────────────────────────────────────────────────────────
+    # Engine (shared core)
+    # ─────────────────────────────────────────────────────────────────────────────
+    "engine/core",
+    "engine/layout",
+    "engine/render",
+    "engine/edit",
+    "engine/format",
+    "engine/platform",
+    "engine/math",
+    "engine/assets",
+    "engine/plugin",
+
+    # ─────────────────────────────────────────────────────────────────────────────
+    # Engine Modules (app-specific engines)
+    # ─────────────────────────────────────────────────────────────────────────────
+    "engine-modules/grid-engine",
+    "engine-modules/deck-engine",
+
+    # ─────────────────────────────────────────────────────────────────────────────
+    # File Formats
+    # ─────────────────────────────────────────────────────────────────────────────
+    "formats/wolia-format",
+    "formats/docx",
+    "formats/xlsx",
+    "formats/pptx",
+    "formats/pdf",
+    "formats/markdown",
+
+    # ─────────────────────────────────────────────────────────────────────────────
+    # Plugins
+    # ─────────────────────────────────────────────────────────────────────────────
+    "plugins/latex",
+    "plugins/diagrams",
+    "plugins/code-blocks",
+
+    # ─────────────────────────────────────────────────────────────────────────────
+    # Tooling
+    # ─────────────────────────────────────────────────────────────────────────────
+    "tooling/font-processor",
+    "tooling/asset-pipeline",
+    "tooling/test-generator",
+    "tooling/fuzzers",
+
+    # ─────────────────────────────────────────────────────────────────────────────
+    # Benchmarks
+    # ─────────────────────────────────────────────────────────────────────────────
+    "benchmarks",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/user/wolia"
+rust-version = "1.85"
+authors = ["Wolia Contributors"]
+
+[workspace.dependencies]
+# ─────────────────────────────────────────────────────────────────────────────
+# Internal crates
+# ─────────────────────────────────────────────────────────────────────────────
+wolia-core = { path = "engine/core" }
+wolia-layout = { path = "engine/layout" }
+wolia-render = { path = "engine/render" }
+wolia-edit = { path = "engine/edit" }
+wolia-format = { path = "engine/format" }
+wolia-platform = { path = "engine/platform" }
+wolia-math = { path = "engine/math" }
+wolia-assets = { path = "engine/assets" }
+wolia-plugin = { path = "engine/plugin" }
+grid-engine = { path = "engine-modules/grid-engine" }
+deck-engine = { path = "engine-modules/deck-engine" }
+
+# File formats
+format-wolia = { path = "formats/wolia-format" }
+format-docx = { path = "formats/docx" }
+format-xlsx = { path = "formats/xlsx" }
+format-pptx = { path = "formats/pptx" }
+format-pdf = { path = "formats/pdf" }
+format-markdown = { path = "formats/markdown" }
+
+# Plugins
+plugin-latex = { path = "plugins/latex" }
+plugin-diagrams = { path = "plugins/diagrams" }
+plugin-code-blocks = { path = "plugins/code-blocks" }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# External dependencies (shared versions)
+# ─────────────────────────────────────────────────────────────────────────────
+# Async runtime
+tokio = { version = "1.43", features = ["full"] }
+async-trait = "0.1"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Graphics & windowing
+wgpu = "24.0"
+winit = "0.30"
+
+# Text & fonts
+cosmic-text = "0.12"
+fontdb = "0.22"
+ttf-parser = "0.25"
+rustybuzz = "0.20"
+
+# Math & geometry
+glam = "0.29"
+euclid = "0.22"
+
+# Error handling
+thiserror = "2.0"
+anyhow = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Testing
+criterion = "0.5"
+proptest = "1.5"
+insta = "1.42"
+
+# Utils
+smallvec = "1.14"
+parking_lot = "0.12"
+indexmap = "2.7"
+hashbrown = "0.15"
+uuid = { version = "1.12", features = ["v4", "serde"] }
+
+# Compression
+flate2 = "1.0"
+zstd = "0.13"
+
+# XML (for Office formats)
+quick-xml = "0.37"
+zip = "2.2"
+
+# PDF
+pdf-writer = "0.12"
+
+# Image handling
+image = "0.25"
+
+[profile.dev]
+opt-level = 0
+debug = true
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
+
+[profile.bench]
+inherits = "release"
+debug = true

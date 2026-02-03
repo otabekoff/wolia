@@ -1,0 +1,61 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: "0 2 * * *" # 2 AM UTC daily
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  nightly-build:
+    name: Nightly Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: wolia-nightly-linux
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: wolia-nightly-windows
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            artifact: wolia-nightly-macos
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxkbcommon-dev libwayland-dev
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Package
+        shell: bash
+        run: |
+          mkdir -p dist
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            cp target/${{ matrix.target }}/release/wolia-write.exe dist/
+            cp target/${{ matrix.target }}/release/wolia-grid.exe dist/
+            cp target/${{ matrix.target }}/release/wolia-deck.exe dist/
+          else
+            cp target/${{ matrix.target }}/release/wolia-write dist/
+            cp target/${{ matrix.target }}/release/wolia-grid dist/
+            cp target/${{ matrix.target }}/release/wolia-deck dist/
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/

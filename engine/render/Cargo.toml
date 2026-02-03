@@ -1,0 +1,21 @@
+[package]
+name = "wolia-render"
+description = "GPU rendering engine for Wolia"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[dependencies]
+wolia-core = { workspace = true }
+wolia-math = { workspace = true }
+wolia-layout = { workspace = true }
+
+wgpu = { workspace = true }
+cosmic-text = { workspace = true }
+image = { workspace = true }
+thiserror = { workspace = true }
+parking_lot = { workspace = true }
+bytemuck = { version = "1.25", features = ["derive"] }

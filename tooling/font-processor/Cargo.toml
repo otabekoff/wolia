@@ -1,0 +1,13 @@
+[package]
+name = "font-processor"
+description = "Font processing tools for Wolia"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[dependencies]
+ttf-parser = { workspace = true }
+thiserror = { workspace = true }

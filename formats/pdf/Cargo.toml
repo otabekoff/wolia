@@ -1,0 +1,16 @@
+[package]
+name = "format-pdf"
+description = "PDF export support"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[dependencies]
+wolia-core = { workspace = true }
+wolia-layout = { workspace = true }
+
+pdf-writer = { workspace = true }
+thiserror = { workspace = true }
