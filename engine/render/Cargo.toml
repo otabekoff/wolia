@@ -16,6 +16,8 @@ wolia-layout = { workspace = true }
 wgpu = { workspace = true }
 cosmic-text = { workspace = true }
 image = { workspace = true }
+resvg = { workspace = true }
+tiny-skia = { workspace = true }
 thiserror = { workspace = true }
 parking_lot = { workspace = true }
 bytemuck = { version = "1.25", features = ["derive"] }

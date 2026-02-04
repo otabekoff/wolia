@@ -229,7 +229,7 @@ impl DocumentManager {
         // Simplified - in real implementation would count words from document content
         self.metadata.char_count = 100;
         self.metadata.word_count = 20;
-        self.metadata.page_count = (self.metadata.word_count + 249) / 250;
+        self.metadata.page_count = self.metadata.word_count.div_ceil(250);
     }
 
     /// Get recent files.

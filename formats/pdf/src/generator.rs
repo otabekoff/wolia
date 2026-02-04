@@ -125,7 +125,7 @@ impl PdfGenerator {
         let mut output = Vec::new();
 
         // Write PDF header
-        output.write_all(PDF_HEADER).map_err(|e| Error::Io(e))?;
+        output.write_all(PDF_HEADER).map_err(Error::Io)?;
 
         // Track offsets for xref
         self.offsets.clear();
@@ -133,7 +133,7 @@ impl PdfGenerator {
             self.offsets.push(output.len() as u64);
             output
                 .write_all(obj.serialize().as_bytes())
-                .map_err(|e| Error::Io(e))?;
+                .map_err(Error::Io)?;
         }
 
         // Write xref table
@@ -141,7 +141,7 @@ impl PdfGenerator {
         let xref_content = self.generate_xref()?;
         output
             .write_all(xref_content.as_bytes())
-            .map_err(|e| Error::Io(e))?;
+            .map_err(Error::Io)?;
 
         // Write trailer
         let trailer = format!(
@@ -149,9 +149,7 @@ impl PdfGenerator {
             self.objects.len() + 1,
             xref_offset
         );
-        output
-            .write_all(trailer.as_bytes())
-            .map_err(|e| Error::Io(e))?;
+        output.write_all(trailer.as_bytes()).map_err(Error::Io)?;
 
         Ok(output)
     }

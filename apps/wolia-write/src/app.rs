@@ -7,9 +7,10 @@ use winit::event::WindowEvent;
 use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop};
 use winit::window::{Window, WindowId};
 
+use wolia_assets::icons::IconManager;
 use wolia_core::Document;
 use wolia_platform::window::WindowConfig;
-use wolia_render::{Quad, QuadRenderer};
+use wolia_render::{IconRenderer, Quad, QuadRenderer};
 
 use crate::automation::AutomationDriver;
 use crate::workspace::Workspace;
@@ -49,6 +50,8 @@ struct WriteApp {
     surface_config: Option<wgpu::SurfaceConfiguration>,
     /// Quad renderer for UI.
     quad_renderer: Option<QuadRenderer>,
+    /// Icon renderer for SVG icons.
+    icon_renderer: Option<IconRenderer>,
     /// Current window size.
     window_size: (u32, u32),
     /// Current mouse position.
@@ -69,6 +72,7 @@ impl WriteApp {
             queue: None,
             surface_config: None,
             quad_renderer: None,
+            icon_renderer: None,
             window_size: (1400, 900),
             mouse_position: (0.0, 0.0),
             mouse_pressed: false,
@@ -126,7 +130,8 @@ impl WriteApp {
     /// Clean up GPU resources in the correct order to prevent segfaults.
     fn cleanup(&mut self) {
         tracing::info!("Cleaning up GPU resources...");
-        // Drop in correct order: renderer -> surface -> device -> window
+        // Drop in correct order: renderers -> surface -> device -> window
+        self.icon_renderer = None;
         self.quad_renderer = None;
         self.surface_config = None;
         self.surface = None;
@@ -332,7 +337,7 @@ impl WriteApp {
             label: Some("Render Encoder"),
         });
 
-        // Build and render UI
+        // Build and render UI quads
         let quads = self.build_ui();
         let (w, h) = (self.window_size.0 as f32, self.window_size.1 as f32);
 
@@ -350,6 +355,41 @@ impl WriteApp {
                 a: 1.0,
             }),
         );
+
+        // Render icons on toolbar buttons
+        if let (Some(icon_renderer), Some(workspace)) = (&self.icon_renderer, &self.workspace) {
+            use crate::toolbar::ButtonState;
+
+            for button in workspace.toolbar.all_buttons() {
+                if icon_renderer.has_icon(&button.icon) {
+                    // Choose tint based on button state
+                    let tint = match button.state {
+                        ButtonState::Normal => [0.3, 0.3, 0.3, 1.0],
+                        ButtonState::Hovered => [0.1, 0.1, 0.4, 1.0],
+                        ButtonState::Active => [0.0, 0.0, 0.6, 1.0],
+                        ButtonState::Disabled => [0.6, 0.6, 0.6, 0.5],
+                    };
+
+                    // Center icon in button (icon size = 20, button size = 32)
+                    let icon_size = 20.0;
+                    let icon_x = button.x + (button.width - icon_size) / 2.0;
+                    let icon_y = button.y + (button.height - icon_size) / 2.0;
+
+                    icon_renderer.render_icon(
+                        &mut encoder,
+                        &view,
+                        queue,
+                        &button.icon,
+                        icon_x,
+                        icon_y,
+                        icon_size,
+                        w,
+                        h,
+                        tint,
+                    );
+                }
+            }
+        }
 
         queue.submit(std::iter::once(encoder.finish()));
         frame.present();
@@ -448,6 +488,49 @@ impl ApplicationHandler for WriteApp {
                     // Create quad renderer
                     let quad_renderer = QuadRenderer::new(&device, format);
 
+                    // Create icon renderer and load toolbar icons
+                    let mut icon_renderer = IconRenderer::new(&device, format);
+                    let icon_manager = IconManager::new();
+
+                    // Load icons for all toolbar buttons
+                    let toolbar_icons = [
+                        "file-plus",
+                        "folder-open",
+                        "save",
+                        "undo",
+                        "redo",
+                        "scissors",
+                        "copy",
+                        "clipboard-paste",
+                        "bold",
+                        "italic",
+                        "underline",
+                        "strikethrough",
+                        "text-align-start",
+                        "text-align-center",
+                        "text-align-end",
+                        "text-align-justify",
+                        "list",
+                        "list-ordered",
+                        "image",
+                        "table",
+                        "link",
+                    ];
+
+                    let mut loaded_count = 0;
+                    for icon_name in &toolbar_icons {
+                        if let Some(svg_data) = icon_manager.get(icon_name) {
+                            if icon_renderer.load_icon(&device, &queue, icon_name, &svg_data, 24) {
+                                loaded_count += 1;
+                            }
+                        }
+                    }
+                    tracing::info!(
+                        "Loaded {}/{} toolbar icons",
+                        loaded_count,
+                        toolbar_icons.len()
+                    );
+
                     // Create a new workspace with an empty document
                     let workspace = Workspace::new(Document::new());
                     tracing::info!("Workspace initialized");
@@ -464,6 +547,7 @@ impl ApplicationHandler for WriteApp {
                     self.queue = Some(queue);
                     self.surface_config = Some(surface_config);
                     self.quad_renderer = Some(quad_renderer);
+                    self.icon_renderer = Some(icon_renderer);
                     self.window = Some(window);
 
                     if self.automation.enabled {

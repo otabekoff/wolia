@@ -1,17 +1,7 @@
 [advisories]
-db-path = "~/.cargo/advisory-db"
-
-[advisories.vulnerabilities]
-severity = "deny"
-
-[advisories.unmaintained]
-severity = "warn"
-
-[advisories.yanked]
-severity = "warn"
-
-[advisories.notice]
-severity = "warn"
+db-path = "~/.cargo/advisory-dbs"
+yanked = "warn"
+ignore = []
 
 [licenses]
 allow = [
@@ -23,13 +13,9 @@ allow = [
     "Zlib",
     "MPL-2.0",
     "Unicode-DFS-2016",
+    "Unicode-3.0",
 ]
-
-[licenses.unlicensed]
-severity = "deny"
-
-[licenses.copyleft]
-severity = "warn"
+unlicensed = "deny"
 
 [bans]
 multiple-versions = "warn"

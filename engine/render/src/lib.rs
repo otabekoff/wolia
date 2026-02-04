@@ -12,12 +12,14 @@
 #![allow(dead_code, unused_imports, unused_variables)]
 
 pub mod context;
+pub mod icon;
 pub mod pipeline;
 pub mod quad;
 pub mod text;
 pub mod texture;
 pub mod ui;
 
+pub use icon::{IconRenderer, IconTexture, RasterizedIcon, TexturedVertex};
 pub use quad::{Quad, QuadRenderer, Vertex};
 pub use ui::{RenderRect, colors, dimensions};
 

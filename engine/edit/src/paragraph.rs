@@ -1,9 +1,10 @@
 //! Paragraph formatting for document structure.
 
 /// Text alignment options.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum TextAlignment {
     /// Left aligned.
+    #[default]
     Left,
     /// Center aligned.
     Center,
@@ -11,12 +12,6 @@ pub enum TextAlignment {
     Right,
     /// Justified.
     Justify,
-}
-
-impl Default for TextAlignment {
-    fn default() -> Self {
-        Self::Left
-    }
 }
 
 impl TextAlignment {
@@ -75,9 +70,10 @@ impl HeadingLevel {
 }
 
 /// List style options.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum ListStyle {
     /// No list.
+    #[default]
     None,
     /// Bulleted list.
     Bullet,
@@ -87,12 +83,6 @@ pub enum ListStyle {
     Lettered,
     /// Roman numeral list (i, ii, iii).
     Roman,
-}
-
-impl Default for ListStyle {
-    fn default() -> Self {
-        Self::None
-    }
 }
 
 impl ListStyle {
